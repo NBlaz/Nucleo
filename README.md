@@ -12,7 +12,7 @@ board.  So that is the gpio pin to target.
 First we have to enable the peripheral (enable clocks, power it up if
 you will).
 
-Then setup the gpio for push pull out.
+Then setup the gpio for push pull out
 
 Then toggle the gpio pin on and off.
 
