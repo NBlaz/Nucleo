@@ -3,57 +3,62 @@
 #include "stm32f4xx_exti.h"
 #include "stm32f4xx_syscfg.h"
 #include "misc.h"
+#include "uart.h"
 
 //Functions prototypes
 void TM_delay_init(void);
 void TM_DelayMillis(uint32_t millis);
-
-void LedSequence1(void);
-void LedSequence2(void);
-void Ledsequence3(void);
 void TM_DelayS(uint32_t millis);
 
 //Global vars
 uint32_t multiplier;
 uint32_t freqq;
-int mode=0;
 
 int main(void)
 {
+	char *a;
+	a="a";
 	// BOOt Chip
 	SystemInit();
-
-
 	TM_delay_init();
-
-
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	/* USART2 clock enable */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 
-
-
-	// IniT Pin 1 GPIO for LED drive
+	// IniT Pin 5 GPIO for LED drive
 	GPIO_InitTypeDef Gpiostruct;
 	Gpiostruct.GPIO_Mode=GPIO_Mode_OUT;
 	Gpiostruct.GPIO_OType=GPIO_OType_PP;
-	Gpiostruct.GPIO_Pin=GPIO_Pin_0;
+	Gpiostruct.GPIO_Pin=GPIO_Pin_5;
 	Gpiostruct.GPIO_PuPd=GPIO_PuPd_UP;
 	Gpiostruct.GPIO_Speed=GPIO_Speed_100MHz;
-
 	GPIO_Init(GPIOA,&Gpiostruct);
 
-	TM_delay_init();
 
+     /*-------------------------- GPIO Configuration ----------------------------*/
+	GPIO_InitTypeDef UartGPIO;
+    UartGPIO.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10; // PA.2 USART2_TX, PA.3 USART2_RX
+    UartGPIO.GPIO_Mode = GPIO_Mode_AF;
+    UartGPIO.GPIO_OType = GPIO_OType_PP;
+    UartGPIO.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    UartGPIO.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &UartGPIO);
+
+    /* Connect USART pins to AF */
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_USART1);
+
+    TM_delay_init();
+	USART2_Configuration();
 
     while(1)
     {
-
-    	TM_DelayMillis(500);
-    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-
-
-
+		a="a";
+		UARTPutc(a);
+		a="b";
+    	//TM_DelayMillis(500);
+    	GPIO_ToggleBits(GPIOA,GPIO_Pin_5);
     }
-
 }
 
 
@@ -81,128 +86,4 @@ void TM_DelayS(uint32_t millis) {
     millis =multiplier*millis;
     /* 4 cycles for one loop */
     while (millis--);
-}
-
-
-
-void LedSequence1(void)
-{
-			TM_DelayMillis(1000);
-			TM_DelayMillis(1000);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-	    	TM_DelayMillis(30);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-	    	TM_DelayMillis(10);
-
-	    	TM_DelayMillis(10);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	TM_DelayMillis(10);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	TM_DelayMillis(15);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	TM_DelayMillis(20);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	TM_DelayMillis(30);
-	    	TM_DelayMillis(30);
-
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-	    	TM_DelayMillis(15);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-
-
-}
-
-void LedSequence2(void)
-{
-	int i;
-
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-
-
-	    	TM_DelayMillis(10);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-
-	    	TM_DelayMillis(10);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	TM_DelayMillis(15);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-
-
-
-	        TM_DelayMillis(10);
-	        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-
-	    	for(i=0;i<3;i++)
-	    	{
-	    		TM_DelayMillis(1000);
-
-			}
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	        TM_DelayMillis(20);
-	        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-	    	TM_DelayMillis(10);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	        TM_DelayMillis(15);
-	        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-	        TM_DelayMillis(15);
-	    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-
-
-
-}
-void Ledsequence3(void)
-{
-	int i;
-
-
-
-		    	TM_DelayMillis(10);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-		    	TM_DelayMillis(10);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-
-		    	for(i=0;i<3;i++)
-		    	{
-		    		TM_DelayMillis(500);
-
-				}
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-
-		        TM_DelayMillis(20);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		        TM_DelayMillis(7);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		        TM_DelayMillis(10);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		        TM_DelayMillis(7);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		        TM_DelayMillis(10);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_1);
-		        TM_DelayMillis(15);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-		        TM_DelayMillis(10);
-		        GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-		    	TM_DelayMillis(10);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-		    	TM_DelayMillis(15);
-				GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-				GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-		    	TM_DelayMillis(10);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_0);
-
-		    	TM_DelayMillis(10);
-		    	GPIO_ToggleBits(GPIOA,GPIO_Pin_4);
-
-
 }

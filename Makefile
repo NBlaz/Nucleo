@@ -15,6 +15,7 @@ SOURCES += $(PERIPH)/src/misc.c \
 		   $(PERIPH)/src/stm32f4xx_syscfg.c
 
 SOURCES += src/main.c \
+		   src/uart.c \
 
 
 OBJECTS = $(addprefix $(BUILDDIR)/, $(addsuffix .o, $(basename $(SOURCES))))
@@ -22,6 +23,7 @@ OBJECTS = $(addprefix $(BUILDDIR)/, $(addsuffix .o, $(basename $(SOURCES))))
 INCLUDES += -I$(NUCLEO)/api \
 			-I$(CORE) \
 			-I$(PERIPH)/api \
+			-I./api\
 			-I\
 
 ELF = $(BUILDDIR)/program.elf
