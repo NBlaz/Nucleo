@@ -13,11 +13,11 @@ void TM_DelayS(uint32_t millis);
 //Global vars
 uint32_t multiplier;
 uint32_t freqq;
-
+RCC_ClocksTypeDef rcc_clock; 
 int main(void)
 {
-	char *a;
-	a="a";
+	char a;
+	a='a';
 	// BOOt Chip
 	SystemInit();
 	TM_delay_init();
@@ -49,14 +49,13 @@ int main(void)
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_USART1);
 
     TM_delay_init();
-	USART2_Configuration();
+	USART1_Configuration();
 
     while(1)
     {
-		a="a";
-		UARTPutc(a);
-		a="b";
-    	//TM_DelayMillis(500);
+
+		printu("yes man\n");
+    	TM_DelayMillis(500);
     	GPIO_ToggleBits(GPIOA,GPIO_Pin_5);
     }
 }
@@ -66,7 +65,7 @@ int main(void)
 
 void TM_delay_init(void)
 {
-	RCC_ClocksTypeDef rcc_clock;
+
 	RCC_GetClocksFreq(&rcc_clock);
 	multiplier=rcc_clock.SYSCLK_Frequency/4;
 
