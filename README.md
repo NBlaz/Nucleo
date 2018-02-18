@@ -1,29 +1,25 @@
 
 
-The generic nucleo board documentation says
+This project is first meant as a Workspace Template for the Nucleo STM32F401 to be used with the GNU toolchain.
 
-User LD2: the green LED is a user LED connected to Arduino signal D13
-corresponding to MCU I/O PA5 (pin 21) or PB13 (pin 34) depending on
-the STM32 target. Please refer to Table 10 to Table 17.
+To build simply run make.
 
-And looking at those tables for the F401RE board D13 is PA5 on this
-board.  So that is the gpio pin to target.
+To flash make flash or copy the .bin on the USB mounted device. The Nucleo will automatically reset and run the program.
 
-First we have to enable the peripheral (enable clocks, power it up if
-you will).
+To debug with St-link on linux
+ 
+https://github.com/texane/stlink
 
-Then setup the gpio for push pull out
+run the server:
+$st-util
 
-Then toggle the gpio pin on and off.
+load the ELF in arm gdb:
+$arm-none-eabi-gdb build/bin/program.elf
 
-Once built take one of the .bin files and copy it to the mounted
-NUCLEO drive, preferrably using the same name as a destination every
-time (flash.bin for example).  It appears that it loads and resets
-the target mcu right away rather than having to press a reset button
-like the old days with the original mbed.
+start debugging with the gdb server remotely:
+$(gdb)tar extended-remote :4242
 
-To verify that it is you blinking the led and not some stale software
-change the last loop to 800000 instead of 200000 and see the off
-time is longer than the on time, then put it back and see that the
-on and off times are again the same.
+
+
+
 
