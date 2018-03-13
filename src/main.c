@@ -54,7 +54,7 @@ int main(void)
     while(1)
     {
 
-		printu("yes man\n");
+		printu("UART works\n");
     	TM_DelayMillis(500);
     	GPIO_ToggleBits(GPIOA,GPIO_Pin_5);
     }
